@@ -47,7 +47,7 @@ def parse_args() -> Tuple[Namespace, List[str]]:
         dest="output_via",
         type=str,
         required=True,
-        help="File or Webhook",
+        help="Output method: file (webhook is not implemented yet)",
     )
 
     parser.add_argument(
@@ -56,7 +56,7 @@ def parse_args() -> Tuple[Namespace, List[str]]:
         dest="webhook",
         type=str,
         default=None,
-        help="Webhook URL",
+        help="Webhook URL (reserved; webhook output is not implemented yet)",
     )
 
     parser.add_argument(
@@ -79,11 +79,10 @@ def parse_args() -> Tuple[Namespace, List[str]]:
 
     args, unknown = parser.parse_known_args()
 
-    # Check if output_via is webhook and ensure webhook_url is provided
+    # Webhook delivery isn't implemented yet; fail fast instead of crashing after the scan
     if args.output_via == "webhook":
-        if not args.webhook:
-            parser.error("When output via webhook, webhook URL is necessary")
-            sys.exit(1)
+        parser.error("Webhook output is not implemented yet. Use -ov file -o <path>.")
+        sys.exit(1)
 
     # Check if output_via is file and ensure outfile_path is provided
     if args.output_via == "file":
