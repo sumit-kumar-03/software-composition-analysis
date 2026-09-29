@@ -88,8 +88,8 @@ The SCA tool accepts several command-line arguments:
 
 - `-t, --target`: (Required) Target as path/image to scan.
 - `-tt, --target-type`: (Required) Type of target to scan
-- `-ov, --output-via`: (Required) Specify output method: "file" or "webhook".
-- `-w, --webhook`: Webhook URL (required if output_via is "webhook").
+- `-ov, --output-via`: (Required) Output method. Only `file` is supported for now; webhook output is not implemented yet.
+- `-w, --webhook`: Reserved for future webhook output (not implemented yet).
 - `-o, --output`: File path for output (required if output_via is "file").
 - `-l, --log`: Log level (DEBUG or ERROR, default is DEBUG).
 
@@ -100,28 +100,23 @@ The SCA tool accepts several command-line arguments:
    sudo docker run --rm -it -v $(pwd)/output:/output software-composition-analysis -tt image -t alpine:latest -ov file -o /output/results.json
    ```
 
-2. Scan a local directory and send results to a webhook:
-   ```bash
-   sudo docker run --rm -it -v $(pwd)/output:/output -v /path/to/scan:/scan software-composition-analysis -tt filesystem -t /scan -ov webhook -w https://webhook.site/your-unique-url
-   ```
-
-3. Few ways to Run scan:
+2. Few ways to Run scan:
 
     - For image from registry
     ```bash
-    sudo docker run --rm -it -v $(pwd)/output:/output software-composition-analysis -tt image
+    sudo docker run --rm -it -v $(pwd)/output:/output software-composition-analysis -tt image \
     -t alpine:latest -ov file -o /output/alpine.json
     ```
 
     - For local docker image
     ```bash
-    sudo docker run --rm -it -v $(pwd)/output:/output -v /var/run/docker.sock:/var/run/docker.sock software-composition-analysis -tt image
-    -t attack-surface-discovery:latest -ov file -o /output/asm.json
+    sudo docker run --rm -it -v $(pwd)/output:/output -v /var/run/docker.sock:/var/run/docker.sock software-composition-analysis -tt image \
+    -t myapp:latest -ov file -o /output/myapp.json
     ```
 
     - For local repo path
     ```bash
-    sudo docker run --rm -it -v $(pwd)/output:/output -v /home/tri/trishiras/attack-surface-discovery:/scan software-composition-analysis -tt filesystem
+    sudo docker run --rm -it -v $(pwd)/output:/output -v /path/to/repo:/scan software-composition-analysis -tt filesystem \
     -t /scan  -ov file -o /output/local.json
     ```
 
@@ -132,7 +127,7 @@ Note: When using file output or scanning local directories, you need to mount vo
 
 1. **Permission Issues**: If you encounter permission problems when writing to mounted volumes, you may need to adjust the permissions or use a named volume.
 
-2. **Network Issues**: Ensure your Docker network settings allow the container to access the target network or webhook URL.
+2. **Network Issues**: Ensure your Docker network settings allow the container to access the target network.
 
 3. **Missing Requirements**: If the build fails due to missing requirements, check that your `requirements.txt` file is up to date and includes all necessary dependencies.
 
